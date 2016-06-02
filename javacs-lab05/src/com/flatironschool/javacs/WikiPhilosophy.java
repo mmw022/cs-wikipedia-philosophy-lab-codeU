@@ -32,20 +32,81 @@ public class WikiPhilosophy {
         // some example code to get you started
 
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
-		Elements paragraphs = wf.fetchWikipedia(url);
-
-		Element firstPara = paragraphs.get(0);
+      String oldURL = "notURL";
+      String urlPhi = "https://en.wikipedia.org/wiki/Philosophy";
+      String wikiUrl = "https://en.wikipedia.org/wiki";
+      ArrayList<String> urlList = new ArrayList<String>();
+      boolean repeat = false;
+      int count = 0;
 		
-		Iterable<Node> iter = new WikiNodeIterable(firstPara);
-		for (Node node: iter) {
-			if (node instanceof TextNode) {
-				System.out.print(node);
-			}
-        }
+      while(!(url.equals(urlPhi)))
+      {
+
+         Elements paragraphs = wf.fetchWikipedia(url);
+
+		   Element firstPara = paragraphs.get(0);
+	
+         repeat = false;
+      	
+		   Iterable<Node> iter = new WikiNodeIterable(firstPara);
+         Element htmlTag;
+
+		   for (Node node: iter) {
+			   if (node instanceof Element) 
+            {
+               
+               url = node.attr("abs:href"); 
+               
+
+               if( !(url.equals("")) )
+               {
+                  if( url.indexOf( wikiUrl) == -1 )
+                  {
+                     repeat = true;
+                  }
+                  
+                  else if (urlList.contains((url)) )
+                  {
+                     repeat = true;
+                  }
+                  
+                  else if( url.indexOf( oldURL ) != -1 )
+                  {
+                     repeat = true;
+                  }
+                  
+                  while( node.parent() != null )
+                  {
+                     Node parentNode = node.parent();
+                     if( parentNode instanceof TextNode )
+                     {
+                    //    System.out.println(parentNode);
+                     }
+                     node = node.parent();
+                  }
+
+                  /*else if( url.indexOf( "Greek" ) != -1 )
+                  {
+                     repeat = true;
+                  }*/
+                  
+                  if( !(repeat) )
+                  {
+                     System.out.println(url);
+                     oldURL = new String( url );
+                     urlList.add(url);
+                     break;
+                  }
+               }
+               
+               repeat = false;
+			   }
+         }
+      }
 
         // the following throws an exception so the test fails
         // until you update the code
-        String msg = "Complete this lab by adding your code and removing this statement.";
-        throw new UnsupportedOperationException(msg);
+        //String msg = "Complete this lab by adding your code and removing this statement.";
+        //throw new UnsupportedOperationException(msg);
 	}
 }
